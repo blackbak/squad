@@ -5,7 +5,7 @@ import torch.nn as nn
 import gensim
 from gensim.models.word2vec import Word2Vec
 
-w2v_path = "data/GoogleNews-vectors-negative300.bin.gz"
+w2v_path = "C:/Users/blackbak/Documents/github/data/squad_data/GoogleNews-vectors-negative300.bin.gz"
 
 all_letters = string.ascii_letters + " '" # + " ?.,;'" remove everything that is not a letter
 n_letters = len(all_letters)
