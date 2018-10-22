@@ -7,7 +7,7 @@ from gensim.models.word2vec import Word2Vec
 
 w2v_path = "C:/Users/blackbak/Documents/github/data/squad_data/GoogleNews-vectors-negative300.bin.gz"
 
-all_letters = string.ascii_letters + " '" # + " ?.,;'" remove everything that is not a letter
+all_letters = string.ascii_letters + " '<>/" # + " ?.,;'" remove everything that is not a letter
 n_letters = len(all_letters)
 
 # Turn a Unicode string to plain ASCII, thanks to http://stackoverflow.com/a/518232/2809427
@@ -29,7 +29,7 @@ def sentence2idx(model, sentence):
     sentence = sentence.lower()
     idx_list = [word2idx(model, word) for word in sentence.split()]
     idx_list = [i for i in idx_list if i is not None]
-    idx_list.append(word2idx(model, '</s>'))
+    #idx_list.append(word2idx(model, '</s>'))
     return idx_list
 
 ################ gensim model helper functions
@@ -76,6 +76,15 @@ def build_w2v_model(sentence_list):
     total_examples = model_new.corpus_count
     model_new.build_vocab([list(model.vocab.keys())], update=True)
     model_new.intersect_word2vec_format(w2v_path, binary=True, lockf=0.0)
+    model_new.train(tokenized_list, total_examples=total_examples, epochs=model_new.epochs)
+    return model_new
+
+def build_local_w2v(sentence_list):
+    sentence_list = [unicodeToAscii(sentence) for sentence in sentence_list]
+    tokenized_list = [sentence.lower().split() for sentence in sentence_list]
+    model_new = Word2Vec(size=100, min_count = 1)
+    model_new.build_vocab(tokenized_list)
+    total_examples = model_new.corpus_count
     model_new.train(tokenized_list, total_examples=total_examples, epochs=model_new.epochs)
     return model_new
     
